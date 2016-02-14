@@ -1,0 +1,17 @@
+<ion-view title="Manage Identities">
+	<ion-content padding="true">
+		<h2>Manage Identities</h2>
+		<p>
+			<button ng-click="scanNewIdentity()" class="button button-full">Scan a new identity</button>
+			<button ng-click="typeNewIdentity()" class="button button-full">Type a new identity</button>
+		</p>
+		<ion-list>
+			<ion-item ng-repeat="identity in secretsDB.secrets" class="item item-button-right">
+				<span>{{ identity.name }}</span>
+				<button class="button button-positive" ng-click="deleteIdentity(identity.name)">
+					<i class="icon ion-close-round"></i>
+				</button>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>

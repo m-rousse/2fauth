@@ -1,0 +1,15 @@
+<ion-view title="Home">
+	<ion-content padding="true">
+		<h2>Retrieve Tokens</h2>
+		<p>Here you will be able to retrieve current tokens.</p>
+		<ion-list>
+			<ion-item class="item">OTP : {{ token.otp }}</ion-item>
+			<ion-item ng-repeat="identity in secretsDB.secrets" class="item item-button-right">
+				<span>{{ identity.name }}</span>
+				<button class="button button-positive" ng-click="chooseToken(identity.name)">
+					<i class="icon ion-information-circled"></i>
+				</button>
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>
