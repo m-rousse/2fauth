@@ -4,6 +4,7 @@
 		<p>Here you will be able to retrieve current tokens.</p>
 		<ion-list>
 			<ion-item class="item">OTP : {{ token.otp }}</ion-item>
+			<div class="item meter"><span style="width: {{ time }}%;"></span></div>
 			<ion-item ng-repeat="identity in secretsDB.secrets" class="item item-button-right">
 				<span>{{ identity.name }}</span>
 				<button class="button button-positive" ng-click="chooseToken(identity.name)">

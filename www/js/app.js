@@ -45,12 +45,14 @@ app.run(function($ionicPlatform, $localstorage) {
   });
 });
 
-app.controller('MainCtrl',function($scope, $cordovaBarcodeScanner, $ionicPopup, $localstorage){
+app.controller('MainCtrl',function($scope, $cordovaBarcodeScanner, $ionicPopup, $localstorage, $interval){
   $scope.token = {
     name: "",
     otp : "",
-    generator: null
+    secret: ""
   };
+  $scope.time = 100;
+  var totp = null;
   getSecrets();
   console.log($scope.secretsDB);
 
@@ -125,15 +127,44 @@ app.controller('MainCtrl',function($scope, $cordovaBarcodeScanner, $ionicPopup, 
   };
 
   $scope.chooseToken = function(name){
+    var found = null;
+    initTime();
+
     angular.forEach($scope.secretsDB.secrets, function(v, k){
       if(v.name == name){
-        console.log("On y est presque !");
-        var generator = new AeroGear.Totp(v.secret);
-        generator.generateOTP(function(result) {
-          $scope.token.otp = result;
-        });
+        found = v;
+        $scope.token.secret = v.secret;
+        $scope.token.name = v.name;
       }
     });
+    if(found != null){
+      totp = new AeroGear.Totp(found.secret);
+      totp.generateOTP(function(result) {
+        $scope.token.otp = result;
+      });
+    }
+    startCounter();
+  };
+
+  function build(){
+    initTime();
+    totp.generateOTP(function(result) {
+      $scope.token.otp = result;
+    });
+  }
+
+  function startCounter(){
+    $interval(function(){
+      if($scope.time <= 0)
+        build();
+      else
+        $scope.time -= 3.33;
+    }, 1000);
+  };
+
+  function initTime(){
+    $scope.time = 100 - (Math.floor(Date.now() / 1000)%30)*3.33;
+    $scope.timeHTML = "<ion-radial-progress timer=\""+$scope.time+"\" color=\"'#ff0000'\" backgroundColor=\"'#00ffff'\"></ion-radial-progress>";
   };
 
   function addSecrets(type, name, secret){
